@@ -29,15 +29,35 @@ class House:
         return self
 
     def make_scheduled_payment(
-        self, schedule: Schedule, n_days: int = 1
+        self,
+        schedule: Schedule,
+        n_days: int = 1,
+        extra_repayment: Value = None,
+        flat: bool = False,
     ) -> Self:
+        if extra_repayment is None:
+            extra_repayment = Value(0)
         if schedule.days_left > 0:
-            return self.make_payment(
-                schedule.current_date,
-                Value(
-                    self.loan_balance.total_cents / schedule.days_left * n_days
-                ),
-            )
+            if not flat:
+                return self.make_payment(
+                    schedule.current_date,
+                    Value(
+                        self.loan_balance.total_cents
+                        / schedule.days_left
+                        * n_days
+                    )
+                    + extra_repayment,
+                )
+            else:
+                return self.make_payment(
+                    schedule.current_date,
+                    Value(
+                        self.total_owed.total_cents
+                        / schedule.total_number_of_days
+                        * n_days
+                    )
+                    + extra_repayment,
+                )
         return self
 
 

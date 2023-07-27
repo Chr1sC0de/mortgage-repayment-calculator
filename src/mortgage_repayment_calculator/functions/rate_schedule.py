@@ -1,7 +1,7 @@
 import abc
 import datetime as dt
 from collections import OrderedDict
-from typing import Self
+from typing import Self, Callable
 
 import numpy as np
 
@@ -10,7 +10,7 @@ class Base:
     def __init__(
         self,
         starting_yearly_rate: float,
-        daily_rate_change_chance: float,
+        daily_rate_change_chance: Callable[[], float],
     ):
         self.current_rate = starting_yearly_rate
         self.starting_rate = starting_yearly_rate
@@ -31,7 +31,7 @@ class Base:
         ...
 
     def set_rate_change(self, date: dt.date) -> Self:
-        if self.rate_change_chance >= self.rate_change_check:
+        if self.rate_change_chance() >= self.rate_change_check:
             return self._rate_change_logic(date)
         self.rate_change = 0
         self.yearly_rate_change_log[date] = self.rate_change
