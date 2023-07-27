@@ -1,5 +1,6 @@
 from math import trunc
-from typing import Self, Tuple
+from typing import Tuple
+from typing_extensions import Self
 
 
 class Value:

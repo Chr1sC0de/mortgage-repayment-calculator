@@ -1,7 +1,8 @@
 import abc
 import datetime as dt
 from collections import OrderedDict
-from typing import Self, Callable
+from typing import Callable
+from typing_extensions import Self
 
 import numpy as np
 

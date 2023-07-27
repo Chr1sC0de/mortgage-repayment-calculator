@@ -1,7 +1,8 @@
 import datetime as dt
 from collections import OrderedDict
 from math import trunc
-from typing import Callable, Self
+from typing import Callable
+from typing_extensions import Self
 
 from mortgage_repayment_calculator.account import Value
 from mortgage_repayment_calculator.plan import Schedule
