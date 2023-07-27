@@ -28,11 +28,17 @@ class House:
         self.cumulative_payment_log[date] = self.total_paid
         return self
 
-    def make_scheduled_payment(self, schedule: Schedule, n_days: int = 1):
-        return self.make_payment(
-            schedule.current_date,
-            Value(self.loan_balance.total_cents / schedule.days_left * n_days),
-        )
+    def make_scheduled_payment(
+        self, schedule: Schedule, n_days: int = 1
+    ) -> Self:
+        if schedule.days_left > 0:
+            return self.make_payment(
+                schedule.current_date,
+                Value(
+                    self.loan_balance.total_cents / schedule.days_left * n_days
+                ),
+            )
+        return self
 
 
 class Interest:
@@ -55,7 +61,11 @@ class Interest:
         self.daily_rate_log[date] = daily_rate
         self.effective_yearly_rate_log[date] = daily_rate * 365
         self.unpaid_interest += Value(
-            trunc(loan_balance.total_cents * daily_rate / 100)
+            trunc(
+                (loan_balance.total_cents + self.unpaid_interest.total_cents)
+                * daily_rate
+                / 100
+            )
         )
         return self
 

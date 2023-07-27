@@ -14,9 +14,7 @@ def test_house_repayment_with_interest(mortgage: float):
     day_payment = 30
     for date in payment_schedule:
         counter += 1
-        interest.add_interest(
-            date, home_debt.loan_balance + interest.unpaid_interest
-        )
+        interest.add_interest(date, home_debt.loan_balance)
         if counter % day_payment == 0:
             interest.make_payment(date, interest.unpaid_interest)
             home_debt.make_scheduled_payment(
