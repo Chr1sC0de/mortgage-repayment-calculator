@@ -2,7 +2,7 @@ import pytest
 from mortgage_repayment_calculator import account
 
 
-def test_account_value():
+def test__account_value():
     value = account.Value.from_dollars(100.12)
     assert value.whole_dollars == 100
     assert value.remaining_cents == 12
@@ -30,6 +30,12 @@ def test_account_value():
     )
     assert dollars == 100
     assert cents == 12
+
+    dollars, cents = account.Value.get_dollars_and_cents_from_dollars_float(
+        -100.25
+    )
+    assert dollars == -100
+    assert cents == -25
 
 
 if __name__ == "__main__":

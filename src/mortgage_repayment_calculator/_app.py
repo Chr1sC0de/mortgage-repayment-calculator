@@ -1,14 +1,25 @@
 import datetime as dt
+from typing import Tuple
 
-import streamlit as st
 import numpy as np
+import plotly.graph_objects as go
+import streamlit as st
+from plotly.subplots import make_subplots
+
+from mortgage_repayment_calculator import account, owed, plan
 from mortgage_repayment_calculator.functions import rate_schedule
-from mortgage_repayment_calculator import owed, plan, account
 
 rate_functions_map = {
     "NormalDistribution": rate_schedule.NormallyDistributed,
     "BimodalDistribution": rate_schedule.BimodalDistribution,
 }
+
+
+def get_coords(dictionary: dict):
+    output = {"x": list(dictionary.keys()), "y": list(dictionary.values())}
+    if isinstance(output["y"][0], account.Value):
+        output["y"] = [y.total_dollars for y in output["y"]]
+    return output
 
 
 def get_rate_change_function():
@@ -77,19 +88,16 @@ def get_rate_change_function():
     return rate_function_constructor(**rate_function_kwargs)
 
 
-# def plot_all(loan_balance:int, loan_term: int, ):
-
-
 def simulate(
     rate_function: rate_schedule.Base,
     interest_owed: owed.Interest,
-    mortgage_owed: owed.House,
+    mortgage_owed: owed.HomeLoan,
     repayment_schedule: plan.Schedule,
     repayment_frequency: int,
     extra_repayments: int = 0,
     flat_payments: bool = False,
     max_cap: int = None,
-):
+) -> Tuple[rate_schedule.Base, owed.Interest, owed.HomeLoan]:
     day_count = 0
     for date in repayment_schedule:
         day_count += 1
@@ -137,3 +145,85 @@ def simulate(
         )
 
     return rate_function, interest_owed, mortgage_owed
+
+
+def plot_simulation(
+    rate_function: rate_schedule.Base,
+    interest_owed: owed.Interest,
+    mortgage_owed: owed.HomeLoan,
+    height: int,
+):
+    scheduled_total_payment = {
+        date: (interest + mortgage)
+        for date, interest, mortgage in zip(
+            interest_owed.payment_log.keys(),
+            interest_owed.payment_log.values(),
+            mortgage_owed.payment_log.values(),
+        )
+    }
+
+    cummulative_total_payments = {
+        date: (interest + mortgage)
+        for date, interest, mortgage in zip(
+            interest_owed.cumulative_payment_log.keys(),
+            interest_owed.cumulative_payment_log.values(),
+            mortgage_owed.cumulative_payment_log.values(),
+        )
+    }
+
+    rates_trace = go.Scatter(
+        get_coords(rate_function.yearly_rate_log), showlegend=False
+    )
+    rate_change_trace = go.Scatter(
+        get_coords(rate_function.yearly_rate_change_log),
+        showlegend=False,
+    )
+    interest_payments_trace = go.Scatter(
+        get_coords(interest_owed.payment_log), showlegend=False
+    )
+    total_payments_trace = go.Scatter(
+        get_coords(scheduled_total_payment), showlegend=False
+    )
+    mortgage_payment_trace = go.Scatter(
+        get_coords(mortgage_owed.payment_log), showlegend=False
+    )
+    cummulative_interest_payments_trace = go.Scatter(
+        get_coords(interest_owed.cumulative_payment_log),
+        showlegend=False,
+    )
+    cummulative_mortgage_payment_trace = go.Scatter(
+        get_coords(mortgage_owed.cumulative_payment_log),
+        showlegend=False,
+    )
+    cummulative_total_payments_trace = go.Scatter(
+        get_coords(cummulative_total_payments), showlegend=False
+    )
+    fig = make_subplots(
+        rows=3,
+        cols=3,
+        shared_xaxes="all",
+        subplot_titles=(
+            "",
+            "Rate Changes",
+            "Annual Interest Rates",
+            "Interest Payments",
+            "House Payments",
+            "Total Payments",
+            "Cummulative Interest Payments",
+            "Cummulative House Payments",
+            "Cummulative Total Payment",
+        ),
+    )
+    fig.add_trace(rate_change_trace, row=1, col=2)
+    fig.add_trace(rates_trace, row=1, col=3)
+    fig.add_trace(interest_payments_trace, row=2, col=1)
+    fig.add_trace(mortgage_payment_trace, row=2, col=2)
+    fig.add_trace(total_payments_trace, row=2, col=3)
+    fig.add_trace(cummulative_interest_payments_trace, row=3, col=1)
+    fig.add_trace(cummulative_mortgage_payment_trace, row=3, col=2)
+    fig.add_trace(cummulative_total_payments_trace, row=3, col=3)
+    fig.update_layout(height=height)
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+    )
