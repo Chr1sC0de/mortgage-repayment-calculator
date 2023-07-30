@@ -27,6 +27,8 @@ def settings():
             offset_deposit_amount,
         ) = app.settings.offset_account()
 
+        # app.settings.expenses()
+
     with col3:
         ...
     # app.settings.shared_equity()
