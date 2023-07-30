@@ -14,7 +14,7 @@ from mortgage_repayment_calculator.logs import ValueLog
 class Offset(General):
     def __init__(self, initial_amount: Value):
         self.fees_collected = Value(0)
-        self.cummulative_fee_log = ValueLog()
+        self.cumulative_fee_log = ValueLog()
         super().__init__(initial_amount)
 
     @abc.abstractmethod
@@ -23,20 +23,24 @@ class Offset(General):
 
 
 class ANZOffset(Offset):
-    def collect_fees(self, date: dt.date) -> Self:
+    def collect_fees(self, date: dt.date, account: General) -> Self:
         if is_end_of_month(date) and self.balance.total_cents > 0:
-            if self.balance.total_cents > 0:
-                withdrawal = self.withdraw(Value.from_dollars(10))
+            if account.balance.total_cents > 0:
+                withdrawal = account.withdraw(Value.from_dollars(10))
                 self.fees_collected += Value(withdrawal)
-                self.cummulative_fee_log[date] = self.fees_collected
+                self.cumulative_fee_log[date] = self.fees_collected
+            else:
+                raise Exception(f"Account empty on {date}, no fee taken")
         return self
 
 
 class UbankOffset(Offset):
-    def collect_fees(self, date: dt.date) -> Self:
+    def collect_fees(self, date: dt.date, account: General) -> Self:
         if is_end_of_year(date) and self.balance.total_cents > 0:
-            if self.balance.total_cents > 0:
+            if account.balance.total_cents > 0:
                 withdrawal = self.withdraw(Value.from_dollars(250))
                 self.fees_collected += Value(withdrawal)
-                self.cummulative_fee_log[date] = self.fees_collected
+                self.cumulative_fee_log[date] = self.fees_collected
+            else:
+                raise Exception(f"Account empty on {date}, no fee taken")
         return self
