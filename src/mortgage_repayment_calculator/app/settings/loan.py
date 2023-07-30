@@ -6,26 +6,35 @@ import streamlit as st
 
 from mortgage_repayment_calculator.app import rate
 from mortgage_repayment_calculator.functions import rate_schedule
+from mortgage_repayment_calculator.account import Value
 from mortgage_repayment_calculator.functions.change_occurs import (
     ChangePerYearProbability,
 )
 from mortgage_repayment_calculator.plan import Schedule
 
 
-def settings() -> Tuple[Schedule, rate_schedule.Base]:
+def settings() -> Tuple[Value, Value, Schedule, rate_schedule.Base]:
     st.header("Loan Settings")
     use_random_seed = st.selectbox("Use Random Seed", ["True", "False"])
 
     if use_random_seed == "True":
-        random_seed = st.number_input("Seed", value=0, step=1)
-        np.random.seed(random_seed)
+        _, col, _ = st.columns([0.05, 0.9, 0.05])
+        with col:
+            random_seed = st.number_input("Seed", value=0, step=1)
+            np.random.seed(random_seed)
+
+    house_price = st.number_input("Home Price $", value=650000, step=10000)
+    deposit = st.number_input("Home Deposit $", value=150000, step=10000)
+
+    house_price = Value.from_dollars(house_price)
+    deposit = Value.from_dollars(deposit)
 
     loan_years = st.slider(
-        "loan term", value=30, min_value=1, max_value=40, step=1
+        "Loan Term (years)", value=30, min_value=1, max_value=40, step=1
     )
 
     starting_yearly_rate = st.number_input(
-        "Base Yearly Rate", value=6.5, min_value=0.1, step=0.01
+        "Base Yearly Rate %", value=6.5, min_value=0.1, step=0.01
     )
 
     rate_changes_per_year = st.number_input(
@@ -71,6 +80,8 @@ def settings() -> Tuple[Schedule, rate_schedule.Base]:
             raise ValueError("distribution not found")
 
     return (
+        house_price,
+        deposit,
         Schedule(start_date=dt.date.today(), plan_years=loan_years),
         rate_change_schedule,
     )

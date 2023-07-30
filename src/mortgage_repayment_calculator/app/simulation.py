@@ -7,13 +7,18 @@ def settings():
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        payment_schedule, rate_change_schedule = app.settings.loan()
+        (
+            house_price,
+            deposit,
+            payment_schedule,
+            rate_change_schedule,
+        ) = app.settings.loan()
 
     with col2:
         (
             transaction_account,
             transaction_deposit_frequency,
-            transaxtion_deposit_amount,
+            transaction_deposit_amount,
         ) = app.settings.account()
 
         (
@@ -21,5 +26,9 @@ def settings():
             offset_deposit_schedule,
             offset_deposit_amount,
         ) = app.settings.offset_account()
+
+    with col3:
+        ...
+    # app.settings.shared_equity()
 
     # transaction_account_settings()

@@ -17,13 +17,13 @@ def settings() -> Tuple[Offset, int, Value]:
         with col:
             offset_type = st.selectbox("Provider", ["Ubank", "ANZ"])
             starting_balance = st.number_input(
-                "Starting Balance", value=50000, step=10000
+                "Starting Balance $", value=50000, step=10000
             )
             deposit_schedule = st.number_input(
-                "Deposit Schedule", value=15, step=1
+                "Deposit Frequency (days)", value=15, step=1
             )
             deposit_amount = st.number_input(
-                "Deposit Amount", value=2000, step=100
+                "Deposit Amount $", value=2000, step=100
             )
             if offset_type == "Ubank":
                 offset_account = UbankOffset(
