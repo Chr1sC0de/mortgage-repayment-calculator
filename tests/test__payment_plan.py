@@ -4,7 +4,7 @@ import pytest
 from mortgage_repayment_calculator import plan
 
 
-def test_payment_plan():
+def test__payment_plan():
     payment_plan = plan.Schedule(dt.date.today(), 30)
     day_list = list(payment_plan)
     assert payment_plan.start_date == day_list[0]
