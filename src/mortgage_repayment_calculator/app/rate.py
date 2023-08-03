@@ -1,5 +1,3 @@
-from typing import Callable
-
 import streamlit as st
 
 from mortgage_repayment_calculator.functions.change_occurs import (
@@ -14,13 +12,17 @@ from mortgage_repayment_calculator.functions.rate_schedule import (
 def change_normally_distributed(
     starting_rate: float,
     rate_change_probability_function: ChangePerYearProbability,
+    avg_change_name="Average Rate Change Per Change Decision",
+    std_change_name="Standard Deviation of Rate Change Per Change Decision",
 ) -> NormallyDistributed:
     mean_rate_change = st.number_input(
-        "Average Rate Change Per Change Decision", value=0.25, step=0.01
+        avg_change_name,
+        value=0.0,
+        step=0.01,
     )
 
     std_rate_change = st.number_input(
-        "Standard Deviation of Rate Change Per Change Decision",
+        std_change_name,
         value=0.25,
         step=0.01,
     )
@@ -35,27 +37,33 @@ def change_normally_distributed(
 def change_bimodal_distribution(
     starting_rate: float,
     rate_change_probability_function: ChangePerYearProbability,
+    avg_change_name_1="Average Rate Change Per Change Decision (Distribution 1)",
+    std_change_name_1="Standard Deviation of Rate Change"
+    + " Per Change Decision (Distribution 1)",
+    avg_change_name_2="Average Rate Change Per Change Decision (Distribution 2)",
+    std_change_name_2="Standard Deviation of Rate Change"
+    + " Per Change Decision (Distribution 2)",
 ) -> BimodalDistribution:
     mean_rate_change_1 = st.number_input(
-        "Average Rate Change Per Change Decision (Distribution 1)",
+        avg_change_name_1,
         value=0.25,
         step=0.01,
     )
 
     std_rate_change_1 = st.number_input(
-        "Standard Deviation of Rate Change Per Change Decision (Distribution 1)",
+        std_change_name_1,
         value=0.25,
         step=0.01,
     )
 
     mean_rate_change_2 = st.number_input(
-        "Average Rate Change Per Change Decision (Distribution 2)",
+        avg_change_name_2,
         value=-0.25,
         step=0.01,
     )
 
     std_rate_change_2 = st.number_input(
-        "Standard Deviation of Rate Change Per Change Decision (Distribution 2)",
+        std_change_name_2,
         value=0.25,
         step=0.01,
     )

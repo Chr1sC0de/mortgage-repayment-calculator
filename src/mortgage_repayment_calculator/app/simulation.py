@@ -10,15 +10,17 @@ def settings():
         (
             house_price,
             deposit,
+            extra_repayments,
             payment_schedule,
-            rate_change_schedule,
+            interest_rate_schedule,
         ) = app.settings.loan()
 
     with col2:
         (
             transaction_account,
-            transaction_deposit_frequency,
-            transaction_deposit_amount,
+            transaction_salary_frequency,
+            transaction_salary_amount,
+            salary_percentage_increase,
         ) = app.settings.account()
 
         (
@@ -27,10 +29,33 @@ def settings():
             offset_deposit_amount,
         ) = app.settings.offset_account()
 
-        # app.settings.expenses()
-
     with col3:
-        ...
-    # app.settings.shared_equity()
+        (
+            expenses_monthly,
+            expense_rate_change_schedule,
+        ) = app.settings.expenses()
 
-    # transaction_account_settings()
+    with col4:
+        (
+            shared_equity,
+            capital_gains_rate_schedule,
+        ) = app.settings.shared_equity(house_price=house_price)
+
+    return (
+        house_price,
+        deposit,
+        extra_repayments,
+        payment_schedule,
+        interest_rate_schedule,
+        transaction_account,
+        transaction_salary_frequency,
+        transaction_salary_amount,
+        salary_percentage_increase,
+        offset_account,
+        offset_deposit_schedule,
+        offset_deposit_amount,
+        expenses_monthly,
+        expense_rate_change_schedule,
+        shared_equity,
+        capital_gains_rate_schedule,
+    )

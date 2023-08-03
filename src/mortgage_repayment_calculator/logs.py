@@ -25,7 +25,7 @@ class ValueLog(LogTemplate[Value]):
     def as_xy_dollar_dict(self):
         return {
             "x": self.get_x(),
-            "y": [y.total_dollars() for y in self.get_y()],
+            "y": [y.total_dollars for y in self.get_y()],
         }
 
 

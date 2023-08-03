@@ -6,6 +6,13 @@ from mortgage_repayment_calculator.plan import Schedule
 
 
 class HomeLoan(Base):
+    def required_payment(self, schedule: Schedule, n_days: int) -> Value:
+        return Value(
+            self.starting_balance.total_cents
+            / schedule.total_number_of_days
+            * n_days
+        )
+
     def make_scheduled_payment(
         self,
         schedule: Schedule,

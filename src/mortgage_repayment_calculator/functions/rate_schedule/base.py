@@ -1,10 +1,13 @@
 import abc
 import datetime as dt
-from collections import OrderedDict
+
+# from collections import OrderedDict
 from typing import Callable
 
 import numpy as np
 from typing_extensions import Self
+
+from mortgage_repayment_calculator.logs import FloatLog
 
 
 class Base:
@@ -18,9 +21,9 @@ class Base:
 
         self.rate_change_probability = daily_rate_change_probability
 
-        self.yearly_rate_log = OrderedDict()
-        self.yearly_rate_change_log = OrderedDict()
-        self.daily_rate_log = OrderedDict()
+        self.yearly_rate_log = FloatLog()
+        self.yearly_rate_change_log = FloatLog()
+        self.daily_rate_log = FloatLog()
 
         self.previous_date = None
         self.current_date = None
@@ -53,9 +56,7 @@ class Base:
             self.set_current_date(date)
             self.set_rate_change(date)
 
-        self.current_rate = np.clip(
-            self.current_rate + self.rate_change, 0, None
-        )
+        self.current_rate = self.current_rate + self.rate_change
         self.yearly_rate_log[date] = self.current_rate
 
         daily_rate = self.current_rate / 365

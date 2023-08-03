@@ -9,3 +9,12 @@ class ChangePerYearProbability:
 
     def __call__(self):
         return self.price_hike_probablity()
+
+
+class SalaryPercentageIncrease:
+    def __init__(self, mean: float, standard_deviation: float):
+        self.mean = mean
+        self.standard_deviation = standard_deviation
+
+    def __call__(self):
+        return np.random.normal(loc=self.mean, scale=self.standard_deviation)

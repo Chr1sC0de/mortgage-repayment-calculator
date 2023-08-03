@@ -33,8 +33,10 @@ class GovernmentSharedEquity(Base):
         )
 
     def make_payment(self, date: dt.date, payment: Value) -> Value:
-        if (payment.total_dollars > 10000) and (
-            payment.total_cents > self.balance.total_cents * 0.05
+        if (payment.total_dollars >= 10000) and (
+            payment.total_cents >= (trunc(self.balance.total_cents * 0.05))
         ):
             return super().make_payment(date, payment)
+        else:
+            super().make_payment(date, Value(0))
         return payment
