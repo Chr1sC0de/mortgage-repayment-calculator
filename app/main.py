@@ -444,7 +444,7 @@ def main():
                     "Offset Account Cumulative Fees $",
                     "Expenses Cumulative Payments $",
                     "Iterest Payments $",
-                    "Interest + Mortgage + Offset Account Cumulative Payments",
+                    "Interest + Mortgage + Offset Account Fees Cumulative Payments",
                 ),
             )
 
@@ -494,7 +494,7 @@ def main():
                     "Shared Equity Cumulative Payments $",
                     "Expenses Cumulative Payments $",
                     "Iterest Payments $",
-                    "Interest + Mortgage + Offset Account Cumulative Payments",
+                    "Interest + Mortgage + Shared Equity Cumulative Payments",
                 ),
             )
 
@@ -550,7 +550,7 @@ def main():
                     "Shared Equity Cumulative Payments $",
                     "Expenses Cumulative Payments $",
                     "Iterest Payments $",
-                    "Interest + Mortgage + Offset Account Cumulative Payments",
+                    "Interest + Mortgage + Offset Account Fees + Shared Equity Cumulative Payments",
                 ),
             )
 
